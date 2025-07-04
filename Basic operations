@@ -1,0 +1,10 @@
+show databases;
+use warehouse test_warehouse;
+use database testing_db;
+use schema test_schema;
+create or replace table iris_table("sl" float,"sw" float,"pl" float,"pw" float,"class" string);
+select *from iris_table;
+select min("sl") FROM IRIS_TABLE;
+select mAX("sl") FROM IRIS_TABLE;
+select AVG("sl") FROM IRIS_TABLE;
+SELECT "sl" FROM IRIS_TABLE WHERE "class"='Iris-versicolor' OR "class"='Iris-setosa';
