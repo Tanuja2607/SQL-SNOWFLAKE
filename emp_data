@@ -1,0 +1,10 @@
+use role accountadmin;
+use warehouse test_warehouse;
+use database testing_db;
+use schema test_schema;
+show databases;
+select * from HR_DATA;
+CREATE OR REPLACE TABLE HR_TABLE("Age" NUMBER,"Attrition" BOOLEAN,"BusinessTravel" STRING,"DailyRate" NUMBER,"Department" STRING,"DistanceFromHome" NUMBER,"Education" NUMBER,"EducationField" STRING,"EmployeeCount" NUMBER,"EmployeeNumber" NUMBER,"EnvironmentSatisfaction" NUMBER,"Gender" STRING,"HourlyRate" NUMBER,"JobInvolvement" NUMBER,"JobLevel" NUMBER,"JobRole" STRING,"JobSatisfaction" NUMBER,"MaritalStatus" STRING,"MonthlyIncome" NUMBER,"MonthlyRate" NUMBER,"NumCompaniesWorked" NUMBER,"Over18" STRING,"OverTime" BOOLEAN,"PercentSalaryHike" NUMBER,"PerformanceRating" NUMBER,"RelationshipSatisfaction" NUMBER,"StandardHours" NUMBER,"StockOptionLevel" NUMBER,"TotalWorkingYears" NUMBER,"TrainingTimesLastYear" NUMBER,"WorkLifeBalance" NUMBER,"YearsAtCompany" NUMBER,"YearsInCurrentRole" NUMBER,"YearsSinceLastPromotion" NUMBER,"YearsWithCurrManager" NUMBER);
+SELECT DISTinct "age" from hr_data;
+select 'attrition',count(*)from hr_data where "attrition"=true union all
+select 'attrition',count(*)from hr_data where "attrition"=false;
