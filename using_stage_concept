@@ -1,0 +1,26 @@
+use warehouse test_warehouse;
+use database testing_db;
+create or replace schema stage_schema;
+use schema stage_schema;
+show databases;
+
+create or replace stage test_aws_stage_1 url='s3://bucketsnowflakes3';
+list @stage_schema.test_aws_stage_1;
+
+create or replace stage test_gcp_stage_1 url='gcs://snows-test-1';
+
+create or replace storage integration gcp_integration_snows_test_3
+type=external_stage
+storage_provider=gcs
+enabled=true
+storage_allowed_locations=('gcs://tester-4426');
+
+desc integration gcp_integration_snows_test_3;
+
+create or replace  stage gcp_test_stage_2
+url='gcs://tester-4426'
+storage_integration=gcp_integration_snows_test_3;
+
+list @gcp_test_stage_2;
+
+show stages;
