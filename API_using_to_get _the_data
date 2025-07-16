@@ -1,0 +1,18 @@
+let
+url="https://technicalhub.io/app/api/superapp.php",
+body="{
+    ""action"": ""Skillup_statistics""
+}",
+headers = [
+    #"Content-Type"="application/json"
+],
+Source=Web.Contents(url,[
+    Content=Text.ToBinary(body),
+    Headers=headers
+]),
+JsonResponse=Json.Document(Source),
+resultlist=if List.Count(JsonResponse) > 0 then JsonResponse else {},
+ResulTable=Table.FromList(resultlist,Splitter.SplitByNothing(),null,null,ExtraValues.Error),
+    #"Expanded Column1" = Table.ExpandRecordColumn(ResulTable, "Column1", {"courseCode", "courseTitle", "courseImage", "seats", "available", "registered", "paid"}, {"Column1.courseCode", "Column1.courseTitle", "Column1.courseImage", "Column1.seats", "Column1.available", "Column1.registered", "Column1.paid"})
+in
+   #"Expanded Column1"
