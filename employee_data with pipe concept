@@ -1,0 +1,100 @@
+use role accountadmin;
+use warehouse test_warehouse;
+use database testing_db;
+use schema test_schema;
+show databases;
+select * from HR_DATA;
+CREATE OR REPLACE TABLE HR_TABLE("Age" NUMBER,"Attrition" BOOLEAN,"BusinessTravel" STRING,"DailyRate" NUMBER,"Department" STRING,"DistanceFromHome" NUMBER,"Education" NUMBER,"EducationField" STRING,"EmployeeCount" NUMBER,"EmployeeNumber" NUMBER,"EnvironmentSatisfaction" NUMBER,"Gender" STRING,"HourlyRate" NUMBER,"JobInvolvement" NUMBER,"JobLevel" NUMBER,"JobRole" STRING,"JobSatisfaction" NUMBER,"MaritalStatus" STRING,"MonthlyIncome" NUMBER,"MonthlyRate" NUMBER,"NumCompaniesWorked" NUMBER,"Over18" STRING,"OverTime" BOOLEAN,"PercentSalaryHike" NUMBER,"PerformanceRating" NUMBER,"RelationshipSatisfaction" NUMBER,"StandardHours" NUMBER,"StockOptionLevel" NUMBER,"TotalWorkingYears" NUMBER,"TrainingTimesLastYear" NUMBER,"WorkLifeBalance" NUMBER,"YearsAtCompany" NUMBER,"YearsInCurrentRole" NUMBER,"YearsSinceLastPromotion" NUMBER,"YearsWithCurrManager" NUMBER);
+SELECT DISTinct "age" from hr_data;
+
+select 'attrition',count(*)from hr_data where "attrition"=true union all
+select 'attrition',count(*)from hr_data where "attrition"=false;
+
+select
+case
+when "age" BETWEEN 18 and 30 then 'young'
+when "age" between 31 and 45 then 'middle_aged'
+when "age" between 46 and 60 then 'old aged'
+else '60+'
+end as age_group,
+count(*) as total_employes
+from hr_data
+group by age_group;
+select distinct "department" from hr_data;
+select "department",count(*) from hr_data where "attrition"=true group by "department";
+
+select "department",
+count(*) as total_employees,
+count_if("attrition"=true)as emp_left
+from hr_data 
+group by "department"
+order by emp_left desc;
+
+select distinct "DistanceFromHome" from hr_data;
+
+select
+case
+when "distancefromhome" between 1 and 10 then 'near'
+when "distancefromhome" between 11 and 20 then 'medium'
+when "distancefromhome" between 21 and 30 then 'Far'
+else '30+'
+end as Distance_category,
+count(*) as Distance_cat from hr_data where "attrition"=True
+group by Distance_category;
+
+select "distancefromhome",
+count(*) as total_employees
+from hr_data
+group by "distancefromhome"
+order by "distancefromhome";
+
+
+select "distancefromhome","department",
+count(*) as total_employees
+from hr_data
+group by "distancefromhome","department"
+order by "distancefromhome";
+
+select
+case
+when "distancefromhome" <=10 then '0-10'
+when "distancefromhome" <=20 then '11-20'
+when "distancefromhome" <=30 then '21-30'
+end as distance_range,"department",
+count(*)as total_employees
+from hr_data where "attrition"=true
+group by
+distance_range,"department"
+order by distance_range,"department";
+
+select distinct "maritalstatus" from hr_data;
+
+select "jobsatisfication","attrition",
+count(*) as count
+from hr_data 
+group by "jobsatisfication","attrition"
+order by "jobsatisfication"; 
+
+
+
+
+
+
+use schema stage_schema;
+create or replace stage my_internal_stage_1;
+
+list @my_internal_stage_1;
+select * from employee_half;
+create or replace file format internal_csv_format
+type='csv'
+field_optionally_enclosed_by='"'
+skip_header=1;
+
+create or replace pipe internal_pipe_half
+as
+copy into employee_half
+from @my_internal_stage_1
+file_format=internal_csv_format;
+select * from employee_half;
+  alter pipe internal_pipe_half refresh;
+
