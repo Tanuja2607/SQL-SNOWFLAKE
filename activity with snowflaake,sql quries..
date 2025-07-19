@@ -1,0 +1,111 @@
+use warehouse student_wh;
+use database school_db;
+use schema hr_schema;
+show databases;
+CREATE TABLE Students_2 (
+    StudentID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Age INT,
+    Grade VARCHAR(10),
+    roll_no varchar(10)
+);
+INSERT INTO Students_2 (StudentID, Name, Age, Grade,roll_no) VALUES
+(1, 'Anjali', 18, 'A','23p31a4444'),
+(2, 'Ravi', 19, 'B','23p31a4443'),
+(3, 'Sneha', 17, 'A','23p31a4445'),
+(4, 'Arjun', 20, 'C','23p31a4422'),
+(5, 'Meena', 18, 'B','23p31a4488');
+alter table Students_2 SET data_retention_time_in_days = 30;
+select * from Students_2;
+
+create or replace stage my_internal_stage_1;
+list @my_internal_stage_1;
+
+create or replace stage student_stage_1;
+
+create or replace file format student_file_format
+type='csv'
+skip_header=1
+field_optionally_enclosed_by='"';
+
+create or replace pipe student_pipe
+as
+copy into Students_2
+from @student_stage_1
+file_format=student_file_format;
+
+select * from students_2;6
+alter pipe student_pipe refresh;
+
+create or replace storage integration student_integration_gcp
+type=external_stage 
+storage_provider=gcs
+enabled=true
+storage_allowed_locations =('gcs://student_table_4426');
+
+desc integration student_integration_gcp;
+
+create or replace pipe student_pipe_1
+as
+copy into students_2
+from @student_stage_1
+file_format=student_file_format;
+
+select * from students_2;
+alter pipe student_pipe_1 refresh;
+
+select * from student_perf;
+
+SELECT * FROM Student_perf WHERE hours_studied > 20;
+
+SELECT * FROM Student_perf WHERE exam_score > 70;
+
+SELECT * FROM Student_perf WHERE school_type = 'Private';
+
+SELECT * FROM Student_perf WHERE learning_disabilities = 'TRUE';
+
+SELECT GENDER, AVG(EXAM_SCORE) AS Average_Exam_Score
+FROM student_perf
+GROUP BY GENDER;
+
+SELECT COUNT(*) AS Students_High_Access_Resources
+FROM student_perf
+WHERE ACCESS_TO_RESOURCES = 'High';
+
+SELECT
+    MAX(PREVIOUS_SCORES) AS Max_Previous_Score,
+    MIN(PREVIOUS_SCORES) AS Min_Previous_Score
+FROM student_perf;
+
+SELECT MOTIVATION_LEVEL, AVG(SLEEP_HOURS) AS Average_Sleep_Hours
+FROM student_perf
+GROUP BY MOTIVATION_LEVEL
+ORDER BY Average_Sleep_Hours DESC;
+ 
+SELECT *
+FROM student_perf
+WHERE GENDER = 'Male'
+  AND DISTANCE_FROM_HOME = 'Near'
+  AND INTERNET_ACCESS = 'Yes';
+
+  SELECT *
+FROM student_perf
+WHERE EXAM_SCORE > 65
+  AND PREVIOUS_SCORES < 70;
+
+
+SELECT *
+FROM student_perf
+WHERE PARENTAL_EDUCATION_LEVEL = 'High School'
+   OR PARENTAL_INVOLVEMENT = 'Low';
+
+SELECT PEER_INFLUENCE, COUNT(*) AS Number_Of_Students
+FROM student_perf
+GROUP BY PEER_INFLUENCE
+ORDER BY PEER_INFLUENCE;
+
+SELECT SCHOOL_TYPE, GENDER, AVG(EXAM_SCORE) AS Average_Exam_Score
+FROM student_perf
+GROUP BY SCHOOL_TYPE, GENDER
+ORDER BY SCHOOL_TYPE, GENDER;
+
