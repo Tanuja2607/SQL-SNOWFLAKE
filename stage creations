@@ -1,0 +1,41 @@
+use database testing_db;
+use schema stage_schema;
+create or replace stage doubt_stage;
+
+create or replace file format doubt_file_format
+type='csv'
+skip_header=1
+field_optionally_enclosed_by='"';
+
+create or replace pipe doubt_pipe
+as
+copy into doubt_table
+from @doubt_stage
+file_format=doubt_file_format;
+
+select * from doubt_table;
+alter pipe doubt_pipe refresh;
+
+create or replace stage  doubt_gcp_stage url='gcs://doubt_table_4426' storage_integration_gcp;
+
+
+create or replace storage integration doubt_integration_gcp
+type=external_stage 
+storage_provider=gcs
+enabled=true
+storage_allowed_locations =('gcs://doubt_table_4426');
+
+desc integration doubt_integration_gcp;
+//have to coppy service code afetr running the code.
+
+create or replace pipe doubt_pipe_1
+as
+copy into doubt_table
+from @doubt_stage
+file_format=doubt_file_format;
+
+select * from doubt_table;
+alter pipe doubt_pipe_1 refresh;
+
+create or replace stage  student_gcp_stage url='gcs://student_table_4426' storage_integration_gcp;
+
