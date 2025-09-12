@@ -1,0 +1,26 @@
+USE ROLE TRAINING_ROLE;
+
+create warehouse Tanuja_wh 
+
+with warehouse_size='xsmall'
+auto_suspend= 300
+auto_resume= true
+initially_suspended= true;
+
+alter warehouse Tanuja_wh
+set warehouse_size='xsmall';
+
+alter warehouse Tanuja_wh
+set min_cluster_count= 1
+max_cluster_count= 3
+scaling_policy='standard';
+
+alter warehouse Tanuja_wh resume;
+alter warehouse Tanuja_wh suspend;
+
+select * from snowflake.account_usage.query_history where warehouse_name= 'Tanuja_wh';
+
+show databases like 'Tanuja_db';
+use warehouse Tanuja_wh
+
+create or replace database gnk_db
